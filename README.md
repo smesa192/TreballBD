@@ -19,6 +19,8 @@ Vam repartir la feina analitzant les qualitats de cadascun dels companys:
 1. En Sergi va descarregar la base de dades des del GitHub del Robert (model relacional) i la va exportar a codi sql.
 2. Vam decidir compartir una carpeta a google drive on pujaríem les nostres parts de la feina.
 3. En Sergi va compartir el codi de la base de dades perquè Dennis i Pau poguessin treballar a les seves consultes. Només tenen de guia els noms dels camps, aquestes consultes seran executades després quan es completin les importacions.
+4. Creació de repositori compartit a GitHub.
+5. Creació de l'arxiu README.md en el repositori de GitHub.
 
 <br>
 
@@ -136,7 +138,6 @@ print(f"Total de lletres contades: {i}")
 
 Si queremos ponerlo en medio de una frase \`lo ponemos en medio de dos acentos abierto \` <br>
 `Esto es una linea de código`
-
 <br>
 
 ### Saltos de linea.

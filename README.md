@@ -1,4 +1,4 @@
-![Ejemplo de imagen](/treball_bd.png)
+![Introducció](/treball_bd.png)
 
 **Dia 1:**
 Vam fer una reunió per repartir-nos les tasques al trello.
@@ -17,9 +17,7 @@ Vam repartir la feina analitzant les qualitats de cadascun dels companys:
 
 # Primera part.
 1. En Sergi va descarregar la base de dades des del GitHub del Robert (model relacional) i la va exportar a codi sql.
-<br>
 2. Vam decidir compartir una carpeta a google drive on pujaríem les nostres parts de la feina.
-<br>
 3. En Sergi va compartir el codi de la base de dades perquè Dennis i Pau poguessin treballar a les seves consultes. Només tenen de guia els noms dels camps, aquestes consultes seran executades després quan es completin les importacions.
 
 <br>

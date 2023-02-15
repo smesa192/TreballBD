@@ -152,7 +152,83 @@ Si queremos que el texto este con saltos de línea podemos usar la etiqueta `br`
 <br>
 
 # Tercera part.
-En Dennis va fer la importació de la taula d'eleccions directament al workbench.
+
+Abans d'executar les importacions, fam fer una serie de canvis en el script original, creant un segon script amb totes les modificacions anomenat: BD_eleccions_v2.sql
+
+<br>
+
+A continuació l'ordre de les modificacions amb els companys que han participat:
+
+1. Modificació de la taula municipis: **Andreu**
+2. Modificació de la taula persones i candidats: **Sergi**
+3. Modificació de la taula eleccions_municipis: **Dennis**
+
+```sql
+-- Modificació de la taula municipis
+ALTER TABLE municipis
+	MODIFY codi_ine CHAR(5) NOT NULL;
+ALTER TABLE municipis
+	DROP INDEX `uk_municipis_codi_ine`,
+    ADD UNIQUE INDEX `uk_municipis_codi_ine` (`codi_ine` ASC,`districte` ASC) VISIBLE;
+    
+    
+-- Modificació de la taula persones i candidats.
+ALTER TABLE candidats 
+	DROP CONSTRAINT fk_candidats_persones1;
+ALTER TABLE persones
+	MODIFY COLUMN persona_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	MODIFY COLUMN dni CHAR(10) DEFAULT NULL;
+ALTER TABLE candidats 
+	ADD   CONSTRAINT `fk_candidats_persones1`
+    FOREIGN KEY (`persona_id`)
+    REFERENCES `grup1eleccions`.`persones` (`persona_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+ALTER TABLE persones 
+	DROP INDEX `uk_candidats_dni`;
+    
+-- Modificació taula eleccions_municipis
+ALTER TABLE eleccions_municipis
+	MODIFY COLUMN vots_valids INT UNSIGNED GENERATED ALWAYS AS (vots_candidatures+vots_nuls) STORED,
+    MODIFY COLUMN vots_emesos INT UNSIGNED GENERATED ALWAYS AS (vots_candidatures+vots_blanc+vots_nuls) STORED;
+
+```
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+# Quarta part.
+
+- L'Andreu va crear un txt compartit amb l'ordre que hi ha que seguir a l'hora d'executar les importacions.
+- En Dennis va fer la importació de la taula d'eleccions directament al workbench.
+- L'Alex, en Dennis, en Sergi i l'Andreu van realitzar totes les importacions que es demanaven. 
+- L'Alex va intentar importar al principi, però no va aconseguir entendre del tot el funcionament i es va possar a entendre el funcionament de la llei d'hont. Encara i així es mereix estar en aquesta part perque va treballar.
+- Una vegada vam tenir totes importacions fetes i comprovant que funcionen correctament, en Sergi les va afegir totes en el mateix script.
+
+<br>
+
+A continuació l'ordre d'importacions amb els companys que han participat:
+
+1. Importació de dades a la taula d'eleccions: **Dennis** 
+2. Importació de dades a la taula de Comunitats Autonomes: **Sergi, Andreu i Dennis**
+3. Importacio de dades a la taula de Provincies: **Sergi, Andreu i Dennis**
+4. Importacio de dades a la taula de municipis: **Sergi, Andreu i Dennis**
+5. Importacio de dades a la taula de Persones:**Sergi, Andreu i Dennis**
+6. Importacio de dades a la taula de candidatures:**Sergi i Andreu**
+7. Importacio de dades a la taula de candidats:**Sergi i Andreu**
+8. Importacio de dades a la taula d'eleccions_municipis:**Dennis**
+9. Importació de vots a nivell municipal: **Sergi i Andreu**
+10. Importació de vots a nivell provincial: **Sergi i Andreu**
+11. Importació de vots a nivell autonòmic: **Sergi i Andreu**
+       
+<br>
+<br>
+
 
 ## Insert eleccions
 

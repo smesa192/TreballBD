@@ -218,9 +218,9 @@ A continuació l'ordre d'importacions amb els companys que han participat:
 2. Importació de dades a la taula de Comunitats Autonomes: **Sergi, Andreu i Dennis**
 3. Importacio de dades a la taula de Provincies: **Sergi, Andreu i Dennis**
 4. Importacio de dades a la taula de municipis: **Sergi, Andreu i Dennis**
-5. Importacio de dades a la taula de Persones:**Sergi, Andreu i Dennis**
-6. Importacio de dades a la taula de candidatures:**Sergi i Andreu**
-7. Importacio de dades a la taula de candidats:**Sergi i Andreu**
+5. Importacio de dades a la taula de Persones: **Sergi, Andreu i Dennis**
+6. Importacio de dades a la taula de candidatures: **Sergi i Andreu**
+7. Importacio de dades a la taula de candidats: **Sergi i Andreu**
 8. Importacio de dades a la taula d'eleccions_municipis:**Dennis**
 9. Importació de vots a nivell municipal: **Sergi i Andreu**
 10. Importació de vots a nivell provincial: **Sergi i Andreu**

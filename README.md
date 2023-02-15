@@ -163,6 +163,8 @@ A continuació l'ordre de les modificacions amb els companys que han participat:
 2. Modificació de la taula persones i candidats: **Sergi**
 3. Modificació de la taula eleccions_municipis: **Dennis**
 
+***Deixem el script en .sql al repositori de GitHub.***
+
 ```sql
 -- Modificació de la taula municipis
 ALTER TABLE municipis

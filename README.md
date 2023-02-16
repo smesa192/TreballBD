@@ -685,7 +685,7 @@ WHERE v.vots IS NULL;
 
 >Treball realitzat per Pau
 
-### Mostra els candidats que s'han presentat (id i nom), el partit politic el qual representa i el total de vots obtinguts de cada partit a totes comunitats autonomes:
+### Mostra els candidats (id i nom), el partit politic el qual representa i el total de vots obtinguts de cada partit a totes les comunitats autonomes:
 
 ```
 SELECT DISTINCT c.candidat_id, p.nom, ca.nom_llarg, SUM(v.vots) 

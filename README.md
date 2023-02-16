@@ -619,3 +619,79 @@ WHERE c.provincia_id = (SELECT provincia_id
 	FROM provincies
 WHERE nom = 'Tarragona');
 ```
+# Crear sentenciés SQL - Categoria 2
+
+## 5 preguntes de consultes de combinacions de més d'una taula: INNER JOINS, LEFT JOINS.
+<p>
+
+>Treball realitzat per Pau
+<p>
+
+### Selecciona el codi de candidatura i el nom curt dels partits que superen la quantitat de 100000 mostrant el nom de la província (mostra igualment la quantitat de vots):
+
+
+```
+SELECT c.codi_candidatura, c.nom_curt, v.vots, p.nom AS nom_provincia
+FROM candidatures c
+INNER JOIN vots_candidatures_prov v ON v.candidatura_id=c.candidatura_id
+INNER JOIN provincies p ON p.provincia_id=v.provincia_id
+WHERE v.vots>100000;
+```
+
+
+### Mostra el nom i el total de vots(vots emesos,vots vàlids,vots candidatures,vots blanc, vots nuls) del municipi Melilla:
+
+
+```
+SELECT m.nom,e.vots_emesos,e.vots_valids,e.vots_candidatures,e.vots_blanc,e.vots_nuls
+FROM eleccions_municipis e 
+INNER JOIN municipis m ON m.municipi_id=e.municipi_id
+WHERE m.nom='Melilla';
+```
+
+### Selecciona el nom complet (nom,1cognom,2cognom) dels candidats que siguin dones i titulars a les eleccions, també cal mostrar al partit el qual pertanyen:
+
+
+```
+SELECT CONCAT(p.nom,' ', p.cog1,' ',p.cog2) AS "Nom complert", ca.nom_curt AS "Nom partit"
+FROM candidats c
+INNER JOIN persones p ON p.persona_id=c.persona_id
+INNER JOIN candidatures ca ON ca.candidatura_id=c.candidatura_id
+WHERE p.sexe='F' AND c.tipus='T';
+```
+
+### Selecciona els noms dels 3 municipis amb més vots nuls:
+
+```
+SELECT m.municipi_id,m.nom, em.vots_nuls 
+FROM municipis m
+INNER JOIN eleccions_municipis em ON em.municipi_id=m.municipi_id
+ORDER BY em.vots_nuls DESC
+LIMIT 3;
+```
+
+### Mostra el id i nom llarg dels partits que no tinguin vots(NULL):
+ 
+```
+SELECT c.candidatura_id, c.nom_llarg, v.vots 
+FROM candidatures c
+LEFT JOIN vots_candidatures_ca v ON c.candidatura_id=v.candidatura_id
+WHERE v.vots IS NULL;
+```
+
+# Crear sentenciés SQL - Categoria 4
+
+## 1 pregunta utilitzant WINDOW FUNCTIONS o recursivitat
+
+>Treball realitzat per Pau
+
+### Mostra els candidats que s'han presentat (id i nom), el partit politic el qual representa i el total de vots obtinguts de cada partit a totes comunitats autonomes:
+
+```
+SELECT DISTINCT c.candidat_id, p.nom, ca.nom_llarg, SUM(v.vots) 
+OVER (PARTITION BY c.candidat_id) AS Suma_vots
+FROM candidats c
+INNER JOIN candidatures ca ON ca.candidatura_id=c.candidatura_id
+INNER JOIN persones p ON p.persona_id=c.persona_id
+INNER JOIN vots_candidatures_ca v ON v.candidatura_id=ca.candidatura_id;
+```

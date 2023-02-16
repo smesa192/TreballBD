@@ -259,7 +259,267 @@ INSERT INTO eleccions (nom,data)
         ('Elecció Cortes Generales abril 2019','2019-04-28'),
         ('Elecció Cortes Generales novembre 2019','2019-11-10');
 ```
+## Importacions amb python
 
+> Importacions realitzades per Sergi, Dennis i Andreu
+
+> Script complet d'importacions realitzat per Sergi
+
+Per començar s'han de importar les llibreries de "mysql.connector" i la de "sys".
+
+``` Python
+import mysql.connector
+import sys
+```
+
+A la connexió s'ha de posar la IP del servidor on s'allotja la base de dades, el usuari i password del usuari mysql, i la base de dades sobre la que es vol treballar.
+``` Python
+cnx = mysql.connector.connect(host='192.168.56.103',user='perepi',password='pastanaga', database='mydb')
+```
+
+Per últim es posa el codi fent els inserts segons les dades dels arxius .DAT.
+
+``` Python
+def importacioCA():
+    #Primer es fa una variable que tingui la ruta relativa al arxiu que es vol llegir
+    pathFitxer="07021911.DAT"
+    #Amb el "try, except" es prova d'obrir el fitxer, i si no ho pot obrir imprimeix un missatge d'error
+    try:
+
+        with open(pathFitxer, "r") as fitxer:
+            #Amb el bucle es mira cada línia del fitxer
+            for linia in fitxer:
+                if linia[11:13] == "99":
+                    if linia[9:11] !="99":
+                        # Selecció de variables a importar
+                        codi_ine=linia[9:11]
+                        nom=" ".join(linia[14:64].split())
+                        #Sentència INSERT amb les variables
+                        insertar=("INSERT INTO comunitats_autonomes (nom,codi_ine) VALUES (%s,%s);")
+                        # Cada %s equival a una variable,la variable "dades" s'utilitza per unir els %s amb els valors.
+                        dades=(nom,codi_ine)
+                        #Execució de la sentència INSERT amb les dades recollides
+                        cursor.execute(insertar,dades)
+
+                
+    except OSError as e:
+        print("No s'ha pogut obrir el fitxer " + pathFitxer)
+    
+    
+def importacioProv():
+    pathFitxer="07021911.DAT"
+    try:
+
+        with open(pathFitxer, "r") as fitxer:
+            for linia in fitxer:
+                # Selección de variables a importar
+                if linia[11:13] !="99":               
+                    nom=" ".join(linia[14:64].split())
+                    codi_ine=linia[11:13]
+                    num_escons=linia[149:155]
+                    insertar=(f"INSERT INTO provincies (comunitat_aut_id,nom,codi_ine,num_escons) VALUES ((SELECT comunitat_aut_id FROM comunitats_autonomes WHERE codi_ine = {linia[9:11]}),%s,%s,%s);")
+                    # Cada %s equival a una variable
+                    dades=(nom,codi_ine,num_escons)
+                    cursor.execute(insertar,dades)
+
+                
+    except OSError as e:
+        print("No s'ha pogut obrir el fitxer " + pathFitxer)
+    
+    
+
+def importacioMun():
+    pathFitxer="05021911.DAT"
+
+    try:
+
+        with open(pathFitxer, "r") as fitxer:
+            for linia in fitxer:
+                # Selección de variables a importar
+                nom=linia[18:118].strip()
+                codi_ine=linia[11:16]
+                districte=linia[16:18]
+                insertar=(f"INSERT INTO municipis (nom,codi_ine,provincia_id,districte) VALUES (%s,%s,(SELECT provincia_id FROM provincies WHERE codi_ine = {linia[11:13]}),%s);")
+                # Cada %s equival a una variable
+                dades=(nom,codi_ine,districte)
+                cursor.execute(insertar,dades)
+
+                
+    except OSError as e:
+        print("No s'ha pogut obrir el fitxer " + pathFitxer)
+    
+    
+ 
+def importacioPersones():
+    pathFitxer="04021911.DAT"
+
+    try:
+
+        with open(pathFitxer, "r") as fitxer:
+            for linia in fitxer:
+                # Selección de variables a importar
+                nom=linia[25:50].strip()
+                cog1=linia[50:75].strip()
+                cog2=linia[75:100].strip()
+                sexo=linia[100:101]
+                insertar=(f"INSERT INTO persones (nom,cog1,cog2,sexe) VALUES (%s,%s,%s,%s);")
+                # Cada %s equival a una variable
+                dades=(nom,cog1,cog2,sexo)
+                cursor.execute(insertar,dades)
+
+                
+    except OSError as e:
+        print("No s'ha pogut obrir el fitxer " + pathFitxer)
+    
+
+def importacioCandidatures():
+    pathFitxer="03021911.DAT"
+
+    try:
+
+        with open(pathFitxer, "r") as fitxer:
+            for linia in fitxer:
+                # Selección de variables a importar
+                eleccio_id=linia[0:2]
+                codi_candidatura=linia[8:14]
+                nom_curt=linia[14:64]
+                nom_llarg=linia[64:214]
+                codi_acumulacio_provincia=linia[214:220]
+                codi_acumulacio_ca=linia[220:226]
+                codi_acumulario_nacional=linia[226:232]
+                insertar=("INSERT INTO candidatures (eleccio_id,codi_candidatura,nom_curt,nom_llarg,codi_acumulacio_provincia,codi_acumulacio_ca,codi_acumulario_nacional) VALUES (%s,%s,%s,%s,%s,%s,%s);")
+                # Cada %s equival a una variable
+                dades=(eleccio_id,codi_candidatura,nom_curt,nom_llarg,codi_acumulacio_provincia,codi_acumulacio_ca,codi_acumulario_nacional)
+                cursor.execute(insertar,dades)
+    except OSError as e:
+        print("No s'ha pogut obrir el fitxer " + pathFitxer)
+    
+
+def importacioCandidats():
+    pathFitxer="04021911.DAT"
+
+    try:
+
+        with open(pathFitxer, "r") as fitxer:
+            for linia in fitxer:
+                # Selección de variables a importar
+                nom=linia[25:50].strip()
+                cog1=linia[50:75].strip()
+                cog2=linia[75:100].strip()
+                NCC=nom+cog1+cog2
+                codi_ine=linia[9:11]
+                num_ordre=linia[21:24]
+                tipus=linia[24]
+                insertar="INSERT INTO candidats (candidatura_id,persona_id,provincia_id,num_ordre,tipus) VALUES ((SELECT candidatura_id FROM candidatures WHERE codi_candidatura = %s),(SELECT persona_id FROM persones WHERE CONCAT(nom,cog1,cog2) = %s LIMIT 1) ,(SELECT provincia_id FROM provincies WHERE codi_ine = %s),%s,%s);"
+                # Cada %s equival a una variable
+                dades=(linia[15:21], NCC, codi_ine, num_ordre, tipus)
+                cursor.execute(insertar,dades)
+
+                
+    except OSError as e:
+        print("No s'ha pogut obrir el fitxer " + pathFitxer)
+    
+
+def importacioElecMun():
+    pathFitxer="05021911.DAT"
+
+    try:
+
+        with open(pathFitxer, "r") as fitxer:
+            for linia in fitxer:
+                # Selección de variables a importar
+                if linia[16:18] =="99":
+                    eleccio_id = cursor.execute(f"SELECT eleccio_id FROM eleccions WHERE any = {int(linia[2:6])} AND mes = {int(linia[6:8])}")
+                    eleccio_id = cursor.fetchone() #devuelve los valores en formato de lista
+                    municipi_id = cursor.execute(f"SELECT municipi_id FROM municipis WHERE (codi_ine = '{linia[11:16]}') AND (provincia_id = (SELECT provincia_id FROM provincies WHERE codi_ine = '{linia[11:13]}'))")
+                    municipi_id = cursor.fetchone() #devuelve los valores en formato de lista
+                    num_meses=linia[136:141]
+                    cens=linia[149:157]
+                    vots_candidatures = linia[205:213]
+                    vots_blanc = linia[189:197]
+                    vots_nuls = linia[197:205]
+                    insertar=(f"INSERT INTO eleccions_municipis (eleccio_id,municipi_id,num_meses,cens,vots_candidatures,vots_blanc,vots_nuls) VALUES (%s,%s,%s,%s,%s,%s,%s);")
+                    # Cada %s equival a una variable
+                    dades=(eleccio_id[0],municipi_id[0],num_meses,cens,vots_candidatures,vots_blanc,vots_nuls)
+                    cursor.execute(insertar,dades)
+
+                
+    except OSError as e:
+        print("No s'ha pogut obrir el fitxer " + pathFitxer)
+    
+
+def importacioVotsMun():
+    pathFitxer="06021911.DAT"
+    lista=list()
+    try:
+
+        with open(pathFitxer, "r") as fitxer:
+            for linia in fitxer:
+                # Selección de variables a importar
+                vots=linia[22:30]
+                insertar=("INSERT IGNORE INTO vots_candidatures_mun VALUES ((SELECT eleccio_id FROM eleccions WHERE any = %s AND mes = %s LIMIT 1),(SELECT municipi_id FROM municipis WHERE codi_ine = %s LIMIT 1),(SELECT candidatura_id FROM candidatures WHERE codi_candidatura = %s LIMIT 1),%s);")
+                # Cada %s equival a una variable
+                dades=(linia[2:6],linia[6:8],linia[9:14],linia[16:22],vots)
+                valorsito=linia[9:14],linia[16:22]
+                cursor.execute(insertar,dades)    
+                lista.append(valorsito)
+    except OSError as e:
+        print("No s'ha pogut obrir el fitxer " + pathFitxer)
+    
+
+def importacioVotsProv():
+    pathFitxer="08021911.DAT"
+    lista=list()
+    try:
+
+        with open(pathFitxer, "r") as fitxer:
+            for linia in fitxer:
+                if linia[11:13] != '99':
+                    # Selección de variables a importar
+                    insertar=("INSERT INTO vots_candidatures_prov VALUES ((SELECT provincia_id FROM provincies WHERE codi_ine = %s),(SELECT candidatura_id FROM candidatures WHERE codi_candidatura = %s),%s,%s)")
+                    # Cada %s equival a una variable
+                    dades=(linia[11:13],linia[14:20],linia[20:28],linia[28:33])
+                    valorsito=linia[9:14],linia[16:22]
+                    cursor.execute(insertar,dades)    
+                    lista.append(valorsito)
+    except OSError as e:
+        print("No s'ha pogut obrir el fitxer " + pathFitxer)
+    
+
+def importacioVotsCA():
+    pathFitxer="08021911.DAT"
+    lista=list()
+    try:
+
+        with open(pathFitxer, "r") as fitxer:
+            for linia in fitxer: #11 13 si 9 11 no
+                if linia[9:11] != '99' and linia[11:13] == '99':
+                    # Selección de variables a importar
+                    insertar=("INSERT INTO vots_candidatures_ca VALUES ((SELECT comunitat_aut_id FROM comunitats_autonomes WHERE codi_ine = %s),(SELECT candidatura_id FROM candidatures WHERE codi_candidatura = %s),%s)")
+                    # Cada %s equival a una variable
+                    dades=(linia[9:11],linia[14:20],linia[20:28])
+                    valorsito=linia[9:14],linia[16:22]
+                    cursor.execute(insertar,dades)    
+                    lista.append(valorsito)
+    except OSError as e:
+        print("No s'ha pogut obrir el fitxer " + pathFitxer)
+    
+
+importacioCA()
+importacioProv()
+importacioMun()
+importacioPersones()
+importacioCandidatures()
+importacioCandidats()
+importacioElecMun()
+importacioVotsMun()
+importacioVotsProv()
+importacioVotsCA()
+cnx.commit()
+cursor.close()
+cnx.close()
+
+```
 # Creareacio de sentencias SQL - Categoria 1
 
 ## 5 preguntes de consultes simples: inclou una sola taula, funcions, funcions d'agregat o grups.

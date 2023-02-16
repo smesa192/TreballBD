@@ -617,8 +617,8 @@ WHERE m.nom='Melilla';
 
 ```
 SELECT CONCAT(p.nom,' ', p.cog1,' ',p.cog2) AS "Nom complert", ca.nom_curt AS "Nom partit"
-FROM candidats c
-INNER JOIN persones p ON p.persona_id=c.persona_id
+FROM persones p
+INNER JOIN candidats c ON c.persona_id=p.persona_id
 INNER JOIN candidatures ca ON ca.candidatura_id=c.candidatura_id
 WHERE p.sexe='F' AND c.tipus='T';
 ```

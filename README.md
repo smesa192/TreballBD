@@ -551,12 +551,11 @@ SELECT CONCAT(nom_curt,'.',nom_llarg) AS nom_candidatura
 	FROM candidatures
 ORDER BY nom_candidatura;
 ```
-### Consulta per saber quants vots valids tenim per cada eleccio i municipi.
+### Consulta per saber quants vots valids tenim per cada municipi.
 
 ```
-SELECT vots_valids, COUNT(*) AS quants
-	FROM eleccions_municipis
-GROUP BY eleccio_id,municipi_id;
+SELECT municipi_id, vots_valids
+	FROM eleccions_municipis;
 ```
 ### Consulta per saber quans anys an pasat desde que es va fer cada eleccio, ordenat per anys_pasat de manera ascedent.
 
@@ -568,7 +567,7 @@ ORDER BY anys_pasat ASC;
 ### Consulta per saber tots els candidats del menys importatnts al mes important.
 
 ```
-SELECT num_ordre, tipus
+SELECT DISTINCT num_ordre, tipus
 	FROM candidats
 WHERE tipus = 'T'
 ORDER BY num_ordre DESC;

@@ -623,7 +623,7 @@ INNER JOIN candidatures ca ON ca.candidatura_id=c.candidatura_id
 WHERE p.sexe='F' AND c.tipus='T';
 ```
 
-### Selecciona els noms dels 3 municipis amb més vots nuls:
+### Selecciona el id i nom dels 3 municipis amb més vots nuls:
 
 ```
 SELECT m.municipi_id,m.nom, em.vots_nuls 
@@ -633,7 +633,7 @@ ORDER BY em.vots_nuls DESC
 LIMIT 3;
 ```
 
-### Mostra el id i nom llarg dels partits que no tinguin vots(NULL):
+### Mostra el id i nom llarg dels partits que no tinguin vots(NULL) a les comunitats autonomes:
  
 ```
 SELECT c.candidatura_id, c.nom_llarg, v.vots 

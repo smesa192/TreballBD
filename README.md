@@ -742,15 +742,22 @@ INNER JOIN vots_candidatures_ca v ON v.candidatura_id=ca.candidatura_id;
 
 # Novena part
 
+1. L'Alex i en Pau van estudiar el pdf sobre la llei d'hont i van entendre com funciona.
+2. Una vegada entès el funcionament, van començar a desarrollar el codig.
+3. A causa dels problemes que vam tenir desenvolupant el codi, l'Andreu i el Dennis van anar a donar un cop de mà la darrera setmana, tot i així, no vam aconseguir avançar més del que tenim.
+
 ## LLEI D'HONT
 
 > Traball realitzat per Alex, Pau, Andreu, Dennis
 
-En aquesta part del treball ens centrem a com realitzar la llei d'hont amb un programa de python. En aquest programa aprendrem a conectarnos al nostre servidor y agafar les dades que necessitem de la base de dades automaticament depenent de la provincia a la que vulguem veure.
 
-Per tal de que el codi funcioni correctament amb els archius .DAT és important que es trobin a la mateixa programa tan el programma .py com el fitxer .DAT.
+En aquest programa aprendrem a conectarnos al nostre servidor y agafar les dades que necessitem de la base de dades automaticament.
 
-A la primera part del codi haurem d'importar el mysql.connector per tal de poder conectarnos a la base de dades. Haurem de crear la connexió amb l'extenció .connect i establim el host, usuari, contrasenya i base de dades a la qual fem referencia. També generem un cursor per anar executant les comandes SQL que indiquem en el programa.
+També generem un cursor per anar executant les comandes SQL que indiquem en el programa.
+
+Després d'executar una consulta, un cursor MySQLCursorBuffered obté tot el conjunt de resultats del servidor i emmagatzema les files.
+
+MySQLCursorBuffered pot ser útil en situacions on múltiples consultes, amb petits conjunts de resultats, necessiten ser combinats o computats entre ells.
 
 ```Python
 import mysql.connector
@@ -766,36 +773,35 @@ lista = []
 cursor.execute(f"SELECT num_escons FROM provincies WHERE lower(nom) = '{provinciaNom}';")
 escons = cursor.fetchone()
 ```
-A la seguent part del codi ens centrerem a agadar els vots totals amb la sentencia SELECT. Ho inidquem tot dintre d'una string i aixi podem tornar a  utilitzar la variable provinciaNom per decidir de quina provincia hem de fer el recompte de vots totals. En aquest cas utilitzem el cursor.fetchone perque només ens interessa el primer resultat que ens dona el qual sera el recompte de vots totals.
+
+A la seguent part del codi ens centrerem a agafar els vots totals de la provincia que em indicat al input. En aquest cas utilitzem el cursor.fetchone perque només ens interessa el primer resultat que ens dona el qual sera el recompte de vots totals.
 
 ```Python
-#Votos totales.
 votsTotals=cursor.execute(f"SELECT SUM(vp.vots) FROM vots_candidatures_prov vp INNER JOIN provincies p ON p.provincia_id = vp.provincia_id WHERE lower(nom)='{provinciaNom}';")
 votsTotals=cursor.fetchone()
 ```
+
 En aquesta part del codi realizem la sentencia SQL per agafar la quantitat de partits que superin el 3% dels vots totals. Amb la seguent sentencia SQL fem la crida i eliminem els que siguin menors al 3%. En aquest cas si que necessiterrem utiliitzar el cursor.fetchall perque ens interessa recollir tots els resultats que apareguin a la crida.
 
 ```Python
-#Votos partidos.
-#Lo del 3%.
 votsPartits=cursor.execute(f"Select nom_curt, vp.vots from provincies p INNER JOIN vots_candidatures_prov vp on vp.provincia_id = p.provincia_id INNER JOIN candidatures c on c.candidatura_id = vp.candidatura_id where p.provincia_id=(SELECT provincia_id FROM provincies WHERE lower(nom) = 'girona') and vp.vots/(SELECT sum(vots) as vots FROM vots_candidatures_prov where provincia_id = (SELECT provincia_id FROM provincies WHERE lower(nom) = '{provinciaNom}')) * 100 >= 3;")
 votsPartits=cursor.fetchall()
 ```
-Amb la seguent sentencia SQL seleccionarem el total de vots en blanc. Com en els demes casos ho indiquem com una string i aixi podem utilitzar la variable provinciaNom per indicar de quina provincia volem recollir les dades. Utilitzem el fetchone perque només ens retornarà un resultat la consulta.
+
+Amb la seguent sentencia SQL seleccionarem el total de vots en blanc.
 
 ```Python
-#Votos blancos.
 votosBlancos=cursor.execute(f"SELECT sum(vots_blanc) as VotsBlancs FROM eleccions_municipis em INNER JOIN municipis m on m.municipi_id=em.municipi_id WHERE m.provincia_id=(SELECT provincia_id FROM provincies WHERE lower(nom)='{provinciaNom}')")
 votosBlancos=cursor.fetchone()
 ```
-Repetim el mateix proces que l'anterior pero nomes amb els vots nuls agafats d'un altre taula utilitzant el INNER JOIN.
+
+Vots nuls.
 
 ```Python
-#Vots nuls.
 votosNulos=cursor.execute(f"SELECT sum(vots_nuls) as VotsNuls FROM eleccions_municipis em INNER JOIN municipis m on m.municipi_id=em.municipi_id WHERE m.provincia_id=(SELECT provincia_id FROM provincies WHERE lower(nom)='{provinciaNom}')")
 votosNulos=cursor.fetchone()
 ```
-En aquesta part del programa és on tenim els print i comprovem que totes les sentecies que hem realitzat anteriorment han agafat correctament les dades de la base de dades i les reflexa en el progrma de python.
+Fem l'output de les variables on em guardat les dades obtingudes a les consultes.
 
 ```Python
 print(f"Provincia {provinciaNom}")
@@ -805,12 +811,14 @@ print(f"Vots blanc: {votosBlancos[0]}")
 print(f"Vots nuls: {votosNulos[0]}")
 print(votsTotals[0])
 
+#El print seguent ens mostra el partit amb els seus vots en tipus tupla, dins d'una tupla generica.
 print(votsPartits)
 ```
-Ara a la part final del programa és on hem d'agafar els partits i els vots que surten de la tupla. Per aixo utilitzem la funcio del for. Comencem amb el primer for partit,vots in votsPartits aixi agafem el resultat de la tupla. A sota fem el for de la tupla en el range, on diem que comenci per el 1 fins que arribi al número d'escons que li pertoqui. Per saber quants li pertoquen tenim la variable, provinciaNom, que ens dira la provincia que volem on ja tindrem calculat els escons i els podrem utilitzar en aquesta part del programa.
+Ara a la part final del programa és on hem d'agafar els partits i els vots que surten de la tupla. 
+Agafem els partits i els vots que surten a la tupla amb el primer for.
+A sota fem el for de la tupla. En el range, li diem que comenci per el 1 fins que arribi al número d'escons.
 
 ```Python
-#Agafem els partits i els vots que surten a la tupla.
 for partit,vots in votsPartits:
     #Tupla es que agafem cada tupla (partits i vots).
     #En el range, le decimos que empiece por el 1 hasta que llegue al número d'escons.
@@ -818,9 +826,10 @@ for partit,vots in votsPartits:
     for tupla in range(1,escons[0]+1):
         votsPartits2=f"{vots/tupla},{partit}"
         lista.append(votsPartits2)
-listaO=sorted(zip(lista),reverse=False)
+#Probem d'ordenar la llista.
+listaO=sorted(zip(lista),reverse=True)
 ```
-Fem un print de la llista on afegim les dades i ja tindriem els resultats que voliem obtenir de la llei d'hont. Al final del codi també és necessari que possem la comanda cursor.close() i la comanda cnx.close() amb les quals deixarem d'executar d'executar qualsavol comanda que pugui haver mes abaix i tencarem la conexio amb el servidor y, per tant, amb la base de dades.
+La llista quan l'imprimim, no surt ordenada, i fins aquí em arribat.
 
 ```Python
 print(listaO)
@@ -829,3 +838,25 @@ print(listaO)
 cursor.close()
 cnx.close()
 ```
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+# Desena part
+
+## Presentació del projecte en el README.md
+> Treball realitzat per Andreu.
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+# Fi.

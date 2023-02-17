@@ -274,7 +274,7 @@ import sys
 
 A la connexió s'ha de posar la IP del servidor on s'allotja la base de dades, el usuari i password del usuari mysql, i la base de dades sobre la que es vol treballar.
 ``` Python
-cnx = mysql.connector.connect(host='192.168.56.103',user='perepi',password='pastanaga', database='mydb')
+cnx = mysql.connector.connect(host='192.168.56.107',user='perepi',password='pastanaga', database='mydb')
 ```
 
 Per últim es posa el codi fent els inserts segons les dades dels arxius .DAT.
@@ -761,7 +761,7 @@ MySQLCursorBuffered pot ser útil en situacions on múltiples consultes, amb pet
 
 ```Python
 import mysql.connector
-cnx = mysql.connector.connect(host='192.168.56.103',user='perepi',password='pastanaga', database='mydb')
+cnx = mysql.connector.connect(host='192.168.56.107',user='perepi',password='pastanaga', database='mydb')
 cursor = cnx.cursor(buffered=True)
 ```
 Primer ens demanarà que triem una provincia, per aixo creem la variable provinciaNom amb un input per més endevant utilitzar-ho com a variable per insertar en el nostre SELECT. Creem una llista vuida i executem la primera sentencia SELECT amb el cusor. Ho escribim tot dintre d'una string i posem la variable del nom de la provincia dintre. Al final utilitzem el cursor.fetchone per que nomes ens agafi el primer resultat.

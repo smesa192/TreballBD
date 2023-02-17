@@ -761,7 +761,7 @@ MySQLCursorBuffered pot ser útil en situacions on múltiples consultes, amb pet
 
 ```Python
 import mysql.connector
-cnx = mysql.connector.connect(host='10.94.255.166',user='perepi',password='pastanaga', database='Grup2_eleccions')
+cnx = mysql.connector.connect(host='192.168.56.103',user='perepi',password='pastanaga', database='grup1eleccions')
 cursor = cnx.cursor(buffered=True)
 ```
 Primer ens demanarà que triem una provincia, per aixo creem la variable provinciaNom amb un input per més endevant utilitzar-ho com a variable per insertar en el nostre SELECT. Creem una llista vuida i executem la primera sentencia SELECT amb el cusor. Ho escribim tot dintre d'una string i posem la variable del nom de la provincia dintre. Al final utilitzem el cursor.fetchone per que nomes ens agafi el primer resultat.

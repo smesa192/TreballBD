@@ -538,7 +538,7 @@ cnx.close()
 
 ### Consulta per saber les eleccions que san celebrat entre dues dates ordenades per el any mes gran.
 
-```
+```sql
 SELECT nom
 	FROM eleccions
 WHERE any BETWEEN 1970 AND 2001
@@ -546,27 +546,27 @@ ORDER BY any DESC;
 ```
 ### Consulta que ens mostra el nom_curt i el nom_llarg de cada candidatura concatenat i seprarat mab un '.'.
 
-```
+```sql
 SELECT CONCAT(nom_curt,'.',nom_llarg) AS nom_candidatura
 	FROM candidatures
 ORDER BY nom_candidatura;
 ```
 ### Consulta per saber quants vots valids tenim per cada municipi.
 
-```
+```sql
 SELECT municipi_id, vots_valids
 	FROM eleccions_municipis;
 ```
 ### Consulta per saber quans anys an pasat desde que es va fer cada eleccio, ordenat per anys_pasat de manera ascedent.
 
-```
+```sql
 SELECT nom, TIMESTAMPDIFF(YEAR, data, CURRENT_DATE()) AS anys_pasat
 	FROM eleccions
 ORDER BY anys_pasat ASC;
 ```
 ### Consulta per saber tots els candidats del menys importatnts al mes important.
 
-```
+```sql
 SELECT DISTINCT num_ordre, tipus
 	FROM candidats
 WHERE tipus = 'T'
@@ -593,7 +593,7 @@ ORDER BY num_ordre DESC;
 ### Selecciona el codi de candidatura i el nom curt dels partits que superen la quantitat de 100000 mostrant el nom de la província (mostra igualment la quantitat de vots):
 
 
-```
+```sql
 SELECT c.codi_candidatura, c.nom_curt, v.vots, p.nom AS nom_provincia
 FROM candidatures c
 INNER JOIN vots_candidatures_prov v ON v.candidatura_id=c.candidatura_id
@@ -605,7 +605,7 @@ WHERE v.vots>100000;
 ### Mostra el nom i el total de vots(vots emesos,vots vàlids,vots candidatures,vots blanc, vots nuls) del municipi Melilla:
 
 
-```
+```sql
 SELECT m.nom,e.vots_emesos,e.vots_valids,e.vots_candidatures,e.vots_blanc,e.vots_nuls
 FROM eleccions_municipis e 
 INNER JOIN municipis m ON m.municipi_id=e.municipi_id
@@ -615,7 +615,7 @@ WHERE m.nom='Melilla';
 ### Selecciona el nom complet (nom,1cognom,2cognom) dels candidats que siguin dones i titulars a les eleccions, també cal mostrar al partit el qual pertanyen:
 
 
-```
+```sql
 SELECT CONCAT(p.nom,' ', p.cog1,' ',p.cog2) AS "Nom complert", ca.nom_curt AS "Nom partit"
 FROM persones p
 INNER JOIN candidats c ON c.persona_id=p.persona_id
@@ -625,7 +625,7 @@ WHERE p.sexe='F' AND c.tipus='T';
 
 ### Selecciona el id i nom dels 3 municipis amb més vots nuls:
 
-```
+```sql
 SELECT m.municipi_id,m.nom, em.vots_nuls 
 FROM municipis m
 INNER JOIN eleccions_municipis em ON em.municipi_id=m.municipi_id
@@ -635,7 +635,7 @@ LIMIT 3;
 
 ### Mostra el id i nom llarg dels partits que no tinguin vots(NULL) a les comunitats autonomes:
  
-```
+```sql
 SELECT c.candidatura_id, c.nom_llarg, v.vots 
 FROM candidatures c
 LEFT JOIN vots_candidatures_ca v ON c.candidatura_id=v.candidatura_id
@@ -659,7 +659,7 @@ WHERE v.vots IS NULL;
 
 ### Consulta per saber el municipi que te mes vots valids.
 
- ```
+ ```sql
 SELECT m.nom, em.vots_valids
 	FROM municipis m
     INNER JOIN eleccions_municipis em ON m.municipi_id = em.municipi_id
@@ -669,7 +669,7 @@ WHERE em.vots_valids = (SELECT MAX(vots_valids)
 
 ### Consulta per saber el nom complet dels candidats que han participat en alguna de les eleccions anteriors.
 
-```
+```sql
 SELECT CONCAT(p.nom,' ',p.cog1,' ',p.cog2) AS nom_complet
 	FROM persones p
     INNER JOIN candidats c1 ON p.persona_id = c1.persona_id
@@ -679,7 +679,7 @@ FROM eleccions);
 ```
 ### Consulta per saber el nom i el codi ine del municipi amb menys escons.
 
-```
+```sql
 SELECT m.nom, m.codi_ine
 	FROM municipis m 
     INNER JOIN provincies p ON m.provincia_id = p.provincia_id
@@ -689,7 +689,7 @@ WHERE p.num_escons = (SELECT MIN(num_escons)
 ```    
 ### Consulta per saber quina o quines eleccions san celebrat un dimecres.
 
-```
+```sql
 SELECT nom, data
 	FROM eleccions
 WHERE WEEKDAY(data) = (SELECT WEEKDAY(data)
@@ -698,7 +698,7 @@ WHERE WEEKDAY(data) = 2);
 ```
 ### Consulta per saber el nom, cognom i numero d'orde dels candidats que son de Tarragona.
 
-```
+```sql
 SELECT p.nom, p.cog1, c.num_ordre
 	FROM persones p
     INNER JOIN candidats c ON p.persona_id = c.persona_id
@@ -724,7 +724,7 @@ WHERE nom = 'Tarragona');
 
 ### Mostra els candidats que s'han presentat (id i nom), el partit politic el qual representa i el total de vots obtinguts de cada partit a totes comunitats autonomes:
 
-```
+```sql
 SELECT DISTINCT c.candidat_id, p.nom, ca.nom_llarg, SUM(v.vots) 
 OVER (PARTITION BY c.candidat_id) AS Suma_vots
 FROM candidats c
